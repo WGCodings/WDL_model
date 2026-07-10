@@ -172,5 +172,70 @@ all the values of `a(mom)` and `b(mom)`, together with plots of the two
 polynomials `p_a` and `p_b`. For comparison it also includes a plot of
 the polynomial `p_a` that was used in the WDL model of the input data.
 
+
+## Quick start: fitting a WDL model for your own UCI engine
+
+This fork adds two extra scripts (`selfplay_collect.py` and
+`aggregate_to_wdl_json.py`) that let you fit a WDL model directly from a
+custom UCI engine's self-play games, instead of relying on Stockfish's own
+fishtest data.
+
+### 1. Install requirements
+
+```bash
+pip install chess
+pip install -r requirements.txt
+```
+
+### 2. Generate self-play games
+
+Edit `ENGINE_PATH`, `N_GAMES`, `BASE_TIME`, and `INCREMENT` at the top of
+`selfplay_collect.py` to point at your engine binary and desired time
+control, then run:
+
+```bash
+python selfplay_collect.py
+```
+
+This downloads the `UHO_Lichess_4852_v1` opening book automatically on
+first run, plays `N_GAMES` self-play games against itself using
+`python-chess`, and logs every position's `(move, material, eval, result)`
+to `selfplay_data/positions.jsonl`.
+
+### 3. Aggregate into the WDL model's input format
+
+```bash
+python aggregate_to_wdl_json.py
+```
+
+This reads `selfplay_data/positions.jsonl` and writes
+`selfplay_data/myWDL.json`, in the same `"('W', 1, 78, 35)": count` format
+that `scoreWDLstat` produces from PGN files.
+
+### 4. Fit the model
+
+```bash
+python scoreWDL.py selfplay_data/myWDL.json \
+  --momType material \
+  --momTarget 40 \
+  --moveMin 1 --moveMax 150 \
+  --materialMin 4 --materialMax 78 \
+  --evalMax 800 \
+  --winMin 5 \
+  --modelFitting optimizeProbability \
+  --plot save
+```
+
+`python scoreWDL.py --help` for all the possible commands.
+
+
+### 5. Read the results
+
+The fitted `as[]`/`bs[]` coefficients (the polynomials `p_a(mom)` and
+`p_b(mom)` described above) are written to `scoreWDL.log`, along with a
+plot summarizing the fit.
+
 ---
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+---
