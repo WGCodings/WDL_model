@@ -10,10 +10,10 @@ from pathlib import Path
 import multiprocessing as mp
 
 ENGINE_PATH = "./engines/Pea.exe"
-N_GAMES = 1000
-BASE_TIME = 8.0
-INCREMENT = 0.08
-CONCURRENCY = 5
+N_GAMES = 10000
+BASE_TIME = 4.0
+INCREMENT = 0.04
+CONCURRENCY = 10
 EVAL_CAP = 1500
 OUT_DIR = Path("selfplay_data")
 OUT_DIR.mkdir(exist_ok=True)

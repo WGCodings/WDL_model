@@ -215,14 +215,16 @@ that `scoreWDLstat` produces from PGN files.
 ### 4. Fit the model
 
 ```bash
-python scoreWDL.py selfplay_data/myWDL.json \
-  --momType material \
-  --momTarget 40 \
-  --moveMin 1 --moveMax 150 \
-  --materialMin 4 --materialMax 78 \
-  --evalMax 800 \
-  --winMin 5 \
-  --modelFitting optimizeProbability \
+python scoreWDL.py selfplay_data/myWDL.json `
+  --momType material `
+  --NormalizeToPawnValue 100 `
+  --momTarget 32 `
+  --moveMin 1 --moveMax 150 `
+  --materialMin 4 `
+  --materialMax 78 `
+  --evalMax 2500 `
+  --winMin 5 `
+  --modelFitting optimizeProbability `
   --plot save
 ```
 
